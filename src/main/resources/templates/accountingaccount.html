@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+<head lang="en">
+    <title>Cuenta Contable</title>
+</head>
+<body>
+<div class="row" layout:fragment="content">
+    <h2 class="indigo-text center" >Información de la Cuenta Contable</h2>
+
+    <form th:action="@{/accountingaccount}" th:object="${accountingAccount}" method="post" class="col m8 s12 offset-m2">
+        <ul th:if="${#fields.hasErrors('*')}" class="errorList">
+            <li th:each="err : ${#fields.errors('*')}" th:text="${err}">
+                Input is incorrect
+            </li>
+        </ul>
+        <div class="row">
+            <input th:field="${accountingAccount.id}" type="hidden" />
+            <div class="input-field col s6">
+                <input th:field="${accountingAccount.description}" id="description" type="text" required="required"
+                       th:errorclass="invalid"/>
+                <label for="description">Descripcion</label>
+
+                <div th:errors="*{description}" class="red-text">Error</div>
+
+            </div>
+            <div class="input-field col s6">
+                <select th:field="*{accountType.id}"  id="accountType" required="true">
+                    <option selected="selected" value="">Ninguno</option>
+                    <option th:each="accountType : ${accountTypes}" th:value="${accountType.id}"
+                            th:text="${accountType.description}">User
+                    </option>
+                </select>
+                <label for="accountType">Tipo de Cuenta</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s6">
+                <label for="allowTransactions">Permite Transacciones</label>
+
+                <div class="switch" id="allowTransactions">
+                    <label>
+                        No
+                        <input type="checkbox" th:field="${accountingAccount.allowTransactions}"/>
+                        <span class="lever"></span>
+                        Si
+                    </label>
+                </div>
+
+            </div>
+            <div class="input-field col s6">
+                <select th:field="*{level}"  id="level" required="true">
+                    <option selected="selected" value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+                <label for="level">Nivel</label>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s6">
+                <select th:field="*{majorAccount.id}"  id="majorAccount">
+                    <option selected="selected" value="">Ninguno</option>
+                    <option th:each="majorAccount : ${majorAccounts}" th:value="${majorAccount.id}"
+                            th:text="${majorAccount.description}">User
+                    </option>
+                </select>
+                <label for="majorAccount">Cuenta Mayor</label>
+
+            </div>
+            <div class="input-field col s6">
+                <input type="number" min="0" th:field="*{balance}" id="balance"/>
+
+                <label for="balance">Balance</label>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="input-field col s6">
+                <select th:field="*{state.id}"  id="state" required="true">
+                    <option selected="selected" value="">Ninguno</option>
+                    <option th:each="state : ${states}" th:value="${state.id}"
+                            th:text="${state.description}">User
+                    </option>
+                </select>
+                <label for="state">Estado</label>
+
+            </div>
+        </div>
+
+        <div class="row s12">
+            <button class="btn waves-effect waves-light" type="submit" name="save">
+                Submit
+                <i class="mdi-content-send right"></i>
+            </button>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" layout:fragment="script">
+    $("input[type='hidden'][name^='_'] ").remove();
+</script>
+</body>
+</html>
