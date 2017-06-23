@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 @DynamicUpdate
 @Data
 @NoArgsConstructor
-public class    AccountingAccount {
+public class AccountingAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_accounting_account")
