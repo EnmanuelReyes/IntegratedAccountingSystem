@@ -4,8 +4,10 @@ import me.enmanuel.accounting.entity.AccountingAccount;
 import me.enmanuel.accounting.entity.AccountingEntry;
 import me.enmanuel.accounting.repository.AccountingAccountRepository;
 import me.enmanuel.accounting.repository.AccountingEntryRepository;
+import me.enmanuel.accounting.repository.AuxiliaryRepository;
 import me.enmanuel.accounting.repository.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +37,9 @@ public class AccountingEntryController {
 
     @Autowired
     private StateRepository stateRepository;
+
+    @Autowired
+    private AuxiliaryRepository auxiliaryRepository;
 
     @GetMapping("/accountingentries")
     public ModelAndView accountingAccount(ModelAndView modelAndView) {
@@ -84,10 +89,18 @@ public class AccountingEntryController {
         return modelAndView;
     }
 
-
+    @PostMapping("/api/accountingentry")
+    public ResponseEntity saveUsing(AccountingEntry accountingEntry) {
+        return ResponseEntity.ok().build();
+    }
 
     private void attachStatuses(ModelMap modelMap) {
         modelMap.addAttribute("states", stateRepository.findAll());
+    }
+
+
+    private void attachAuxiliaries(ModelMap modelMap) {
+        modelMap.addAttribute("states", auxiliaryRepository.findAll());
     }
 
     private void attachAccountingEntries(ModelMap modelMap) {
