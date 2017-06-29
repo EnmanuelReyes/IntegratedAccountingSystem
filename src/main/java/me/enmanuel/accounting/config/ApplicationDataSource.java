@@ -1,11 +1,9 @@
 package me.enmanuel.accounting.config;
 
-import me.enmanuel.accounting.entity.AccountType;
-import me.enmanuel.accounting.entity.AccountingAccount;
-import me.enmanuel.accounting.entity.Origin;
-import me.enmanuel.accounting.entity.State;
+import me.enmanuel.accounting.entity.*;
 import me.enmanuel.accounting.repository.AccountTypeRepository;
 import me.enmanuel.accounting.repository.AccountingAccountRepository;
+import me.enmanuel.accounting.repository.AuxiliaryRepository;
 import me.enmanuel.accounting.repository.StateRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -30,6 +28,22 @@ public class ApplicationDataSource {
     public CommandLineRunner initStatuses(StateRepository stateRepository) {
         return (args) -> {
             stateRepository.save(State.ACTIVE);
+        };
+    }
+
+
+    @Bean
+    public CommandLineRunner initAuxiliaries(AuxiliaryRepository auxiliaryRepository) {
+        return (args) -> {
+            auxiliaryRepository.save(new Auxiliary(1,   "Contabilidad", State.ACTIVE));
+            auxiliaryRepository.save(new Auxiliary(2,   "Nomina", State.ACTIVE));
+            auxiliaryRepository.save(new Auxiliary(3,   "Facturacion", State.ACTIVE));
+            auxiliaryRepository.save(new Auxiliary(4,   "Inventario", State.ACTIVE));
+            auxiliaryRepository.save(new Auxiliary(5,   "Cuentas x Cobrar", State.ACTIVE));
+            auxiliaryRepository.save(new Auxiliary(6,   "Cuentas x Pagar", State.ACTIVE));
+            auxiliaryRepository.save(new Auxiliary(7,   "Compras", State.ACTIVE));
+            auxiliaryRepository.save(new Auxiliary(8,   "Activos Fijos", State.ACTIVE));
+            auxiliaryRepository.save(new Auxiliary(9,   "Cheques", State.ACTIVE));
         };
     }
 
