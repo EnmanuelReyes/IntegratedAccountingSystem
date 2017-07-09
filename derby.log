@@ -1,13 +1,13 @@
 ----------------------------------------------------------------
-Fri Jun 23 13:53:27 BOT 2017:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-015c-d616-5962-000004a10cb0 
-on database directory memory:C:\Users\Enmanuel Reyes\IdeaProjects\accounting\testdb with class loader sun.misc.Launcher$AppClassLoader@18b4aac2 
-Loaded from file:/C:/Users/Enmanuel%20Reyes/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar
+Sun Jul 09 18:23:53 AST 2017:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-015d-2973-ae08-0000068b7aa0 
+on database directory /Users/enmanuelreyes/IdeaProjects/IntegratedAccountingSystem/filedb with class loader sun.misc.Launcher$AppClassLoader@18b4aac2 
+Loaded from file:/Users/enmanuelreyes/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.13.1.1/29c42babe5c5463c6eea45487d3cfbfe8348ccd1/derby-10.13.1.1.jar
 java.vendor=Oracle Corporation
-java.runtime.version=1.8.0_77-b03
-user.dir=C:\Users\Enmanuel Reyes\IdeaProjects\accounting
-os.name=Windows 8.1
-os.arch=amd64
-os.version=6.3
+java.runtime.version=1.8.0_121-b13
+user.dir=/Users/enmanuelreyes/IdeaProjects/IntegratedAccountingSystem
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.12
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''

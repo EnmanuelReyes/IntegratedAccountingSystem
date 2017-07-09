@@ -24,7 +24,7 @@ public class SwaggerConfiguration {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.any())
-                .paths(path -> path.startsWith("/api/"))
+                .paths(path -> path.startsWith("/api2/"))
                 .build()
                         .apiInfo(metaData());
 

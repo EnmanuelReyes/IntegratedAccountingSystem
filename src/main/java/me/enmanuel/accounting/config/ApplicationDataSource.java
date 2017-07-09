@@ -62,8 +62,71 @@ public class ApplicationDataSource {
     @Bean
     public CommandLineRunner initAccountingAccounts(AccountingAccountRepository accountingAccountRepository) {
         return (args) -> {
-            accountingAccountRepository.save(new AccountingAccount(1, "Activos", new AccountType(1), false, (byte)1,
-                    null, BigDecimal.ZERO, State.ACTIVE));
+            accountingAccountRepository.save(new AccountingAccount(1, "Activos",
+                    new AccountType(1), false, (byte)1, null, BigDecimal.ZERO, State.ACTIVE));
+
+            accountingAccountRepository.save(new AccountingAccount(2, "Efectivo en caja y banco",
+                    new AccountType(1), false, (byte)2, new AccountingAccount(1), BigDecimal.ZERO, State.ACTIVE));
+
+            accountingAccountRepository.save(new AccountingAccount(3, "Caja Chica",
+                    new AccountType(1), true, (byte)3, new AccountingAccount(2), BigDecimal.ZERO, State.ACTIVE));
+
+            accountingAccountRepository.save(new AccountingAccount(4, "Cuenta Corriente Banco x",
+                    new AccountType(1), true, (byte)3,  new AccountingAccount(3), BigDecimal.ZERO, State.ACTIVE));
+
+            accountingAccountRepository.save(new AccountingAccount(5, "Inventarios y Mercancias",
+                    new AccountType(1), false, (byte)2, new AccountingAccount(1), BigDecimal.ZERO, State.ACTIVE));
+
+            accountingAccountRepository.save(new AccountingAccount(6, "Inventario",
+                    new AccountType(1), true, (byte)3, new AccountingAccount(5), BigDecimal.ZERO, State.ACTIVE));
+
+            accountingAccountRepository.save(new AccountingAccount(7, "Cuentas x Cobrar",
+                    new AccountType(1), false, (byte)2, new AccountingAccount(1), BigDecimal.ZERO, State.ACTIVE));
+
+            accountingAccountRepository.save(new AccountingAccount(8, "Cuentas x Cobrar Cliente X",
+                    new AccountType(1), true, (byte)3, new AccountingAccount(7), BigDecimal.ZERO, State.ACTIVE));
+
+            accountingAccountRepository.save(new AccountingAccount(12, "Ventas",
+                    new AccountType(4), false, (byte)2, new AccountingAccount(1), BigDecimal.ZERO, State.ACTIVE));
+
+//            accountingAccountRepository.save(new AccountingAccount(13, "Ingresos x Ventas",
+//                    new AccountType(4), true, (byte)3, new AccountingAccount(12), BigDecimal.ZERO, State.ACTIVE));
+//
+
+
+
+            accountingAccountRepository.save(new AccountingAccount(47, "Gastos",
+                    new AccountType(6), false, (byte)1, null, BigDecimal.ZERO, State.ACTIVE));
+            accountingAccountRepository.save(new AccountingAccount(48, "Gastos Administrativos",
+                    new AccountType(6), false, (byte)2, new AccountingAccount(47), BigDecimal.ZERO, State.ACTIVE));
+            accountingAccountRepository.save(new AccountingAccount(50, "Gastos Generales",
+                    new AccountType(6), true, (byte)3,  new AccountingAccount(48), BigDecimal.ZERO, State.ACTIVE));
+
+
+
+            accountingAccountRepository.save(new AccountingAccount(65, "Gasto depreciación Activos Fijos",
+                    new AccountType(6), false, (byte)2, new AccountingAccount(47), BigDecimal.ZERO, State.ACTIVE));
+            accountingAccountRepository.save(new AccountingAccount(66, "Depreciación Acumulada Activos Fijos",
+                    new AccountType(6), true, (byte)3, new AccountingAccount(65), BigDecimal.ZERO, State.ACTIVE));
+//
+//          accountingAccountRepository.save(new AccountingAccount(70, "Salarios y Sueldos Empleados",
+//                    new AccountType(1), true, (byte)3, new AccountingAccount(18), BigDecimal.ZERO, State.ACTIVE));
+
+//            accountingAccountRepository.save(new AccountingAccount(71, "Gastos de Nomina Empresa",
+//                    new AccountType(1), true, (byte)3, new AccountingAccount(2), BigDecimal.ZERO, State.ACTIVE));
+//            accountingAccountRepository.save(new AccountingAccount(80, "Compra de Mercancias",
+//                    new AccountType(1), true, (byte)3, new AccountingAccount(2), BigDecimal.ZERO, State.ACTIVE));
+//            accountingAccountRepository.save(new AccountingAccount(81, "Cuentas x Pagar",
+//                    new AccountType(1), true, (byte)3, new AccountingAccount(2), BigDecimal.ZERO, State.ACTIVE));
+
+//            accountingAccountRepository.save(new AccountingAccount(82, "Cuentas x Pagar Proveedor X",
+//                    new AccountType(1), true, (byte)3, new AccountingAccount(2), BigDecimal.ZERO, State.ACTIVE));
+
+            accountingAccountRepository.save(new AccountingAccount(83, "Cuentas Cheques en Banco X",
+                    new AccountType(1), true, (byte)3, new AccountingAccount(3), BigDecimal.ZERO, State.ACTIVE));
+
+
+
         };
     }
 
