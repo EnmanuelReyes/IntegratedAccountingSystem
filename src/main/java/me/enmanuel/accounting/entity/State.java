@@ -1,5 +1,6 @@
 package me.enmanuel.accounting.entity;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -27,8 +28,10 @@ public class State {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_state")
     @NonNull
+    @ApiModelProperty(hidden = true)
     private Integer id;
     @NonNull
+    @ApiModelProperty(hidden = true)
     private String description;
 
 }

@@ -11,6 +11,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,31 +22,31 @@ import javax.validation.constraints.NotNull;
 @Entity
 @DynamicInsert
 @DynamicUpdate
+@NoArgsConstructor
 @Data
 @RequiredArgsConstructor
-public class Auxiliary {
+@Table(name = "`transaction`")
+public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_auxiliary")
-    private Integer id;
-    @NonNull
-    @JsonIgnore
+    @Column(name = "id_transaction")
     @ApiModelProperty(hidden = true)
-    private String description;
-    @NonNull
+    private Integer id;
+
     @NotNull
     @ManyToOne
     @ApiModelProperty(hidden = true)
-    private State state;
+    @JsonIgnore
+    @JoinColumn(name = "id_accounting_entry", referencedColumnName = "id_accounting_entry", nullable = false)
+    private AccountingEntry accountingEntry;
 
-    public Auxiliary() {
-    }
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "id_accounting_account", referencedColumnName = "id_accounting_account", nullable = false)
+    private AccountingAccount accountingAccount;
 
-    public Auxiliary(Integer id, String description, State state) {
-        this.id = id;
-        this.description = description;
-        this.state = state;
-    }
-
+    @NonNull
+    @Enumerated(EnumType.STRING)
+    private Origin origin;
+    private BigDecimal amount;
 }
-

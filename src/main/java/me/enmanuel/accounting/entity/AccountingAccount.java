@@ -1,5 +1,6 @@
 package me.enmanuel.accounting.entity;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -25,14 +26,20 @@ public class AccountingAccount {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_accounting_account")
     private Integer id;
+    @ApiModelProperty(hidden = true)
     private String description;
     @NotNull
     @ManyToOne
+    @ApiModelProperty(hidden = true)
     private AccountType accountType;
+    @ApiModelProperty(hidden = true)
     private Boolean allowTransactions;
+    @ApiModelProperty(hidden = true)
     private Byte level;
     @ManyToOne
+    @ApiModelProperty(hidden = true)
     private AccountingAccount majorAccount;
+    @ApiModelProperty(hidden = true)
     private BigDecimal balance;
     @NotNull
     @ManyToOne
@@ -48,5 +55,8 @@ public class AccountingAccount {
         this.majorAccount = majorAccount;
         this.balance = balance;
         this.state = state;
+    }
+    public AccountingAccount(Integer id) {
+        this.id = id;
     }
 }

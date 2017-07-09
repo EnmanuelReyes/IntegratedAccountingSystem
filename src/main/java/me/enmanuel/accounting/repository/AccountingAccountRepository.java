@@ -10,4 +10,6 @@ import org.springframework.data.repository.CrudRepository;
  * Time: 6:18 PM
  */
 public interface AccountingAccountRepository extends CrudRepository<AccountingAccount, Integer> {
+
+    Iterable<AccountingAccount> findByAllowTransactionsTrue();
 }

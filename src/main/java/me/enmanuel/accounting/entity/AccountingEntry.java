@@ -1,5 +1,6 @@
 package me.enmanuel.accounting.entity;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,18 +28,20 @@ public class AccountingEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_accounting_entry")
+    @ApiModelProperty(hidden = true)
     private Integer id;
     private String description;
-    private Integer auxiliary;
     @NotNull
     @ManyToOne
-    private AccountingAccount accountingAccount;
-    @NonNull
-    @Enumerated(EnumType.STRING)
-    private Origin origin;
+    private Auxiliary auxiliary;
+
+    @ApiModelProperty(hidden = true)
     private LocalDateTime date;
-    private BigDecimal amount;
     @NotNull
     @ManyToOne
+    @ApiModelProperty(hidden = true)
     private State state;
+
+    @OneToMany(mappedBy = "accountingEntry")
+    private List<Transaction> transactions;
 }

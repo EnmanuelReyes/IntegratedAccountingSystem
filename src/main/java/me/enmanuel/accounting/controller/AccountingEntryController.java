@@ -1,23 +1,22 @@
 package me.enmanuel.accounting.controller;
 
-import me.enmanuel.accounting.entity.AccountingAccount;
-import me.enmanuel.accounting.entity.AccountingEntry;
+import me.enmanuel.accounting.service.AccountingEntryService;
+import me.enmanuel.accounting.entity.*;
 import me.enmanuel.accounting.repository.AccountingAccountRepository;
 import me.enmanuel.accounting.repository.AccountingEntryRepository;
 import me.enmanuel.accounting.repository.AuxiliaryRepository;
 import me.enmanuel.accounting.repository.StateRepository;
+import me.enmanuel.accounting.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDateTime;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,6 +29,9 @@ public class AccountingEntryController {
 
     @Autowired
     AccountingEntryRepository accountingEntryRepository;
+
+    @Autowired
+    AccountingEntryService accountingEntryService;
 
 
     @Autowired
@@ -54,9 +56,11 @@ public class AccountingEntryController {
 
         modelAndView.setViewName("accountingentry");
         final AccountingEntry accountingEntry = new AccountingEntry();
+        accountingEntry.setAuxiliary(Util.toList(auxiliaryRepository.findAll()).get(0));
         modelAndView.addObject("accountingEntry", accountingEntry);
         attachStatuses(modelAndView.getModelMap());
         attachAccountingAccounts(modelAndView.getModelMap());
+        attachAuxiliaries(modelAndView.getModelMap());
         return modelAndView;
     }
 
@@ -67,18 +71,54 @@ public class AccountingEntryController {
         modelAndView.addObject("accountingEntry", accountingEntry);
         attachStatuses(modelAndView.getModelMap());
         attachAccountingAccounts(modelAndView.getModelMap());
+        attachAuxiliaries(modelAndView.getModelMap());
+
         return modelAndView;
     }
 
 
-    @PostMapping(value = "/accountingentry")
+    @PostMapping(value = "/accountingentry",  params = {"save"})
     public ModelAndView save(ModelAndView modelAndView, AccountingEntry accountingEntry, RedirectAttributes redirectAttributes) {
-        accountingEntry.setDate(LocalDateTime.now());
-        accountingEntryRepository.save(accountingEntry);
-        redirectAttributes.addFlashAttribute("success", "El restaurante fue guardada correctamente");
-        modelAndView.setViewName("redirect:/accountingentries");
+        accountingEntry.setAuxiliary(Util.toList(auxiliaryRepository.findAll()).get(0));
+        try {
+            accountingEntryService.save(accountingEntry);
+            redirectAttributes.addFlashAttribute("success", "La entrada contable fue guardada correctamente");
+            modelAndView.setViewName("redirect:/accountingentries");
+
+        }
+        catch (Exception e) {
+            modelAndView.addObject("error", e.getMessage());
+        }
         return modelAndView;
     }
+
+
+    @PostMapping(value = "/accountingentry",  params = {"addTransaction"})
+    public ModelAndView addTransaction(ModelAndView modelAndView, AccountingEntry accountingEntry) {
+        if (accountingEntry.getTransactions() == null)
+            accountingEntry.setTransactions(new ArrayList<>());
+        accountingEntry.getTransactions().add(new Transaction());
+        attachAccountingAccounts(modelAndView.getModelMap());
+        attachAuxiliaries(modelAndView.getModelMap());
+        attachStatuses(modelAndView.getModelMap());
+
+        return modelAndView;
+    }
+
+
+    @PostMapping(value = "/accountingentry",  params = {"removeTransaction"})
+    public ModelAndView deleteTransaction(ModelAndView modelAndView, AccountingEntry accountingEntry, HttpServletRequest req) {
+        int rowId = Integer.valueOf(req.
+                getParameter("removeTransaction"));
+
+        accountingEntry.getTransactions().remove(rowId);
+        attachAccountingAccounts(modelAndView.getModelMap());
+        attachAuxiliaries(modelAndView.getModelMap());
+        attachStatuses(modelAndView.getModelMap());
+
+        return modelAndView;
+    }
+
 
     @RequestMapping(value = "/accountingentry/delete/{accountingEntryId}")
     public ModelAndView delete(ModelAndView modelAndView, @PathVariable Integer accountingEntryId,
@@ -90,8 +130,16 @@ public class AccountingEntryController {
     }
 
     @PostMapping("/api/accountingentry")
-    public ResponseEntity saveUsing(AccountingEntry accountingEntry) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> apiSave(@RequestBody AccountingEntry accountingEntry) {
+        ResponseEntity<String> r;
+        accountingEntry.setState(State.ACTIVE);
+        try {
+            accountingEntryService.save(accountingEntry);
+            r = ResponseEntity.ok().build();
+        } catch (Exception ex) {
+            r = ResponseEntity.badRequest().body(ex.getMessage());
+        }
+        return r;
     }
 
     private void attachStatuses(ModelMap modelMap) {
@@ -100,7 +148,8 @@ public class AccountingEntryController {
 
 
     private void attachAuxiliaries(ModelMap modelMap) {
-        modelMap.addAttribute("states", auxiliaryRepository.findAll());
+
+        modelMap.addAttribute("auxiliaries", auxiliaryRepository.findAll());
     }
 
     private void attachAccountingEntries(ModelMap modelMap) {
@@ -110,7 +159,7 @@ public class AccountingEntryController {
 
 
     private void attachAccountingAccounts(ModelMap modelMap) {
-        modelMap.addAttribute("accountingAccounts", accountingAccountRepository.findAll());
+        modelMap.addAttribute("accountingAccounts", accountingAccountRepository.findByAllowTransactionsTrue());
     }
 
 

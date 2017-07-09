@@ -26,10 +26,7 @@
             <th data-field="id">ID</th>
             <th data-field="description">Descripcion</th>
             <th data-field="description">Auxiliar</th>
-            <th data-field="description">Cuenta</th>
-            <th data-field="description">Tipo de Movimiento</th>
             <th data-field="description">Fecha</th>
-            <th data-field="description">Monto</th>
             <th data-field="description">Estado</th>
             <th data-field="price">Acciones</th>
         </tr>
@@ -38,11 +35,8 @@
         <tr th:each="accountingEntry : ${accountingEntries}">
             <td th:text="${accountingEntry.id}">ID</td>
             <td th:text="${accountingEntry.description}">Description</td>
-            <td th:text="${accountingEntry.auxiliary}">Description</td>
-            <td th:text="${accountingEntry.accountingAccount.description}">Description</td>
-            <td th:text="${accountingEntry.origin}">Description</td>
+            <td th:text="${accountingEntry.auxiliary.description}">Description</td>
             <td th:text="${accountingEntry.date}">Description</td>
-            <td th:text="${accountingEntry.amount}">Description</td>
             <td th:text="${accountingEntry.state.description}">Description</td>
             <td>
                 <a class="btn-floating btn-large waves-effect waves-light red"

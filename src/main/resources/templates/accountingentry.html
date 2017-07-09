@@ -7,8 +7,11 @@
 </head>
 <body>
 <div class="row" layout:fragment="content">
-    <h2 class="indigo-text center" >Información de la Cuenta Contable</h2>
+    <h2 class="indigo-text center">Información de la Entrada Contable</h2>
 
+    <div th:if="${error}" class="card-panel teal lighten-2" th:text="${error}">This is a card panel with a teal
+        lighten-2 class
+    </div>
     <form th:action="@{/accountingentry}" th:object="${accountingEntry}" method="post" class="col m8 s12 offset-m2">
         <ul th:if="${#fields.hasErrors('*')}" class="errorList">
             <li th:each="err : ${#fields.errors('*')}" th:text="${err}">
@@ -16,7 +19,7 @@
             </li>
         </ul>
         <div class="row">
-            <input th:field="${accountingEntry.id}" type="hidden" />
+            <input th:field="${accountingEntry.id}" type="hidden"/>
             <div class="input-field col s6">
                 <input th:field="${accountingEntry.description}" id="description" type="text" required="required"
                        th:errorclass="invalid"/>
@@ -26,8 +29,12 @@
 
             </div>
             <div class="input-field col s6">
-                <input th:field="${accountingEntry.auxiliary}" id="auxiliary" type="number" required="required"
-                       th:errorclass="invalid"/>
+                <select th:field="*{auxiliary.id}" id="auxiliary" required="true" disabled="true">
+                    <option selected="selected" value="">Ninguno</option>
+                    <option th:each="auxiliary : ${auxiliaries}" th:value="${auxiliary.id}"
+                            th:text="${auxiliary.description}">User
+                    </option>
+                </select>
                 <label for="auxiliary">Auxiliar</label>
 
                 <div th:errors="*{auxiliary}" class="red-text">Error</div>
@@ -35,39 +42,10 @@
             </div>
 
         </div>
-        <div class="row">
-            <div class="input-field col s6">
-                <select th:field="*{accountingAccount.id}"  id="accountType" required="true">
-                    <option selected="selected" value="">Ninguno</option>
-                    <option th:each="accountingAccount : ${accountingAccounts}" th:value="${accountingAccount.id}"
-                            th:text="${accountingAccount.description}">User
-                    </option>
-                </select>
-                <label for="accountType">Cuenta</label>
-            </div>
-            <div class="input-field col s6">
-                <select th:field="*{origin}" id="origin" required="true"
-                        th:errorclass="invalid">
-                    <option selected="selected" value="">Ninguno</option>
-                    <option th:each="origin : ${T(me.enmanuel.accounting.entity.Origin).values()}" th:value="${origin}"
-                            th:text="${origin}">Origin
-                    </option>
-                </select>
-                <label for="origin">Tipo de Movimiento</label>
-            </div>
-        </div>
-        <div class="row">
-            <div class="input-field col s6">
-                <input type="number" min="0" th:field="*{amount}" id="amount"/>
-
-                <label for="amount">Monto</label>
-
-            </div>
-        </div>
 
         <div class="row">
             <div class="input-field col s6">
-                <select th:field="*{state.id}"  id="state" required="true">
+                <select th:field="*{state.id}" id="state" required="true">
                     <option selected="selected" value="">Ninguno</option>
                     <option th:each="state : ${states}" th:value="${state.id}"
                             th:text="${state.description}">User
@@ -77,6 +55,59 @@
 
             </div>
         </div>
+
+
+        <div class="row s12">
+            <button class="btn waves-effect waves-light" type="submit" name="addTransaction">
+                Agregar Transaccion
+                <i class="mdi-content-send right"></i>
+            </button>
+
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th data-field="id">ID</th>
+                <th data-field="description">Cuenta Contable</th>
+                <th data-field="description">Origen</th>
+                <th data-field="description">Monto</th>
+                <th data-field="price">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="row, rowStat : *{transactions}">
+                <td><input disabled="disabled" th:field="*{transactions[__${rowStat.index}__].id}"/></td>
+                <td>
+                    <select th:field="*{transactions[__${rowStat.index}__].accountingAccount.id}" required="true"
+                            th:errorclass="invalid">
+                        <option selected="selected" value="">Ninguno</option>
+                        <option th:each="accountingAccount : ${accountingAccounts}" th:value="${accountingAccount.id}"
+                                th:text="${accountingAccount.description}">Cuenta
+                        </option>
+                    </select>
+                </td>
+                <td>
+                    <select th:field="*{transactions[__${rowStat.index}__].origin}" id="origin"
+                            required="true"
+                            th:errorclass="invalid">
+                        <option selected="selected" value="">Ninguno</option>
+                        <option th:each="origin : ${T(me.enmanuel.accounting.entity.Origin).values()}"
+                                th:value="${origin}"
+                                th:text="${origin}">Origin
+                        </option>
+                    </select>
+                </td>
+                <td>
+                    <input type="number" min="0" th:field="*{transactions[__${rowStat.index}__].amount}" id="amount"/>
+                </td>
+                <td>
+                    <button class="btn red" type="submit" name="removeTransaction" th:value="${rowStat.index}"
+                    >Eliminar <i class="mdi-action-delete right waves-effect"></i></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
         <div class="row s12">
             <button class="btn waves-effect waves-light" type="submit" name="save">
