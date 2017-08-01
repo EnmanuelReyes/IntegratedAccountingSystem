@@ -1,8 +1,10 @@
 package me.enmanuel.accounting.service;
 
+import me.enmanuel.accounting.entity.AccountingAccount;
 import me.enmanuel.accounting.entity.AccountingEntry;
 import me.enmanuel.accounting.entity.Origin;
 import me.enmanuel.accounting.entity.Transaction;
+import me.enmanuel.accounting.repository.AccountingAccountRepository;
 import me.enmanuel.accounting.repository.AccountingEntryRepository;
 import me.enmanuel.accounting.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ public class AccountingEntryService {
 
     @Autowired
     AccountingEntryRepository accountingEntryRepository;
+    @Autowired
+    AccountingAccountRepository accountingAccountRepository;
 
     @Autowired
     TransactionRepository transactionRepository;
@@ -54,6 +58,10 @@ public class AccountingEntryService {
 
             if (transaction.getOrigin() == Origin.CREDIT) {
                 hasCredit = true;
+            }
+            AccountingAccount accountingAccountFromDb = accountingAccountRepository.findOne(transaction.getAccountingAccount().getId());
+            if (accountingAccountFromDb != null && !accountingAccountFromDb.getAllowTransactions()){
+                throw new RuntimeException("La cuenta id " + accountingAccountFromDb.getId() + " no permite transacciones");
             }
         }
 

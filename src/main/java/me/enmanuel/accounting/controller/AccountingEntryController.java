@@ -135,12 +135,23 @@ public class AccountingEntryController {
         accountingEntry.setState(State.ACTIVE);
         try {
             accountingEntryService.save(accountingEntry);
-            r = ResponseEntity.ok().build();
+            r = ResponseEntity.ok(accountingEntry.getId().toString());
         } catch (Exception ex) {
             r = ResponseEntity.badRequest().body(ex.getMessage());
         }
         return r;
     }
+    @GetMapping("/api/accountingentry")
+    public ResponseEntity<String> apiSave() {
+        ResponseEntity<String> r;
+        try {
+            r = ResponseEntity.ok("Hello");
+        }catch (Exception ex){
+            r = ResponseEntity.badRequest().body(ex.getMessage());
+        }
+        return r;
+    }
+
 
     private void attachStatuses(ModelMap modelMap) {
         modelMap.addAttribute("states", stateRepository.findAll());
