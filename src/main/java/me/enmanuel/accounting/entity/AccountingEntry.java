@@ -4,10 +4,11 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -43,5 +44,6 @@ public class AccountingEntry {
     private State state;
 
     @OneToMany(mappedBy = "accountingEntry")
+    @Cascade(CascadeType.REMOVE)
     private List<Transaction> transactions;
 }

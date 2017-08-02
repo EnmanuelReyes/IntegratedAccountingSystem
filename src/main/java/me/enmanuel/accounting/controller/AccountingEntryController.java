@@ -88,6 +88,9 @@ public class AccountingEntryController {
         }
         catch (Exception e) {
             modelAndView.addObject("error", e.getMessage());
+            attachAccountingAccounts(modelAndView.getModelMap());
+            attachAuxiliaries(modelAndView.getModelMap());
+            attachStatuses(modelAndView.getModelMap());
         }
         return modelAndView;
     }
@@ -124,7 +127,7 @@ public class AccountingEntryController {
     public ModelAndView delete(ModelAndView modelAndView, @PathVariable Integer accountingEntryId,
                                RedirectAttributes redirectAttributes) {
         accountingEntryRepository.delete(accountingEntryId);
-        redirectAttributes.addFlashAttribute("success", "El restaurante fue eliminado correctamente");
+        redirectAttributes.addFlashAttribute("success", "La entrada contable fue eliminada correctamente");
         modelAndView.setViewName("redirect:/accountingentries");
         return modelAndView;
     }
