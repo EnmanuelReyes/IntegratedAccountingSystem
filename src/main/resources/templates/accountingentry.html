@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layout/default">
 <head lang="en">
-    <title>Cuenta Contable</title>
+    <title>Entrada Contable</title>
 </head>
 <body>
 <div class="row" layout:fragment="content">
@@ -79,7 +79,7 @@
             <tr th:each="row, rowStat : *{transactions}">
                 <td><input disabled="disabled" th:field="*{transactions[__${rowStat.index}__].id}"/></td>
                 <td>
-                    <select th:field="*{transactions[__${rowStat.index}__].accountingAccount.id}" required="true"
+                    <select th:field="*{transactions[__${rowStat.index}__].accountingAccount.id}" required="required"
                             th:errorclass="invalid">
                         <option selected="selected" value="">Ninguno</option>
                         <option th:each="accountingAccount : ${accountingAccounts}" th:value="${accountingAccount.id}"
@@ -89,7 +89,7 @@
                 </td>
                 <td>
                     <select th:field="*{transactions[__${rowStat.index}__].origin}" id="origin"
-                            required="true"
+                            required="required"
                             th:errorclass="invalid">
                         <option selected="selected" value="">Ninguno</option>
                         <option th:each="origin : ${T(me.enmanuel.accounting.entity.Origin).values()}"
@@ -99,9 +99,11 @@
                     </select>
                 </td>
                 <td>
-                    <input type="number" min="0" th:field="*{transactions[__${rowStat.index}__].amount}" id="amount"/>
+                    <input type="number" min="0" required="required" class="amount" step="any"
+                           th:field="*{transactions[__${rowStat.index}__].amount}" id="amount"/>
                 </td>
                 <td>
+                    <button data-target="modal1" type="button" class="btn modal-trigger">Convertir</button>
                     <button class="btn red" type="submit" name="removeTransaction" th:value="${rowStat.index}"
                     >Eliminar <i class="mdi-action-delete right waves-effect"></i></button>
                 </td>
@@ -116,8 +118,90 @@
             </button>
         </div>
     </form>
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <h4>Cambio de Divisas</h4>
+            <p>Aqui podra convertir su monto de cualquier moneda a DOP (Dominican Pesos)</p>
+            <div class="row">
+                <div class="col s12">
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <input placeholder="Monto a Convertir" id="amount_convert" type="text" disabled="disabled"/>
+                            <label for="amount_convert">Monto a Convertir</label>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="input-field col s6">
+                            <select id="currency" required="true">
+                                <option selected="selected" value="">Ninguno</option>
+                                <option th:value="USD">USD</option>
+                                <option th:value="EUR">EUR</option>
+                            </select>
+                            <label for="currency">Moneda</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <input placeholder="Tasa" id="currency-value" type="text" disabled="disabled"/>
+                            <label for="amount_convert">Tasa</label>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="input-field col s6">
+                            <input placeholder="Monto convertido" id="amount-converted" type="text" disabled="disabled"/>
+                            <label for="amount-converted">Monto convertido</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" id="convert-btn"
+               class="modal-action modal-close waves-effect waves-green btn-flat">Convertir</a>
+            <a href="#!" id="cancel-btn" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+        </div>
+    </div>
 </div>
 <script type="text/javascript" layout:fragment="script">
+
+    var amount;
+    var $amount;
+    function clear() {
+        $("#currency").val("");
+        $('#currency').material_select();
+        $('#currency-value').val('');
+        $('#amount-converted').val('');
+    }
+    $(document).ready(function () {
+        // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
+        $('.modal-trigger').click(function(){
+            $amount= $(this).parent().parent().find('.amount');
+            amount = $amount.val();
+            if (amount){
+                clear();
+                $('#amount_convert').val(amount);
+                $('.modal').modal('open');
+
+            }
+        });
+
+        $('#convert-btn').click(function () {
+           var money = $('#amount-converted').val();
+           if (money) {
+               $amount.val(money);
+           }
+        });
+
+
+        $("#currency").change(function() {
+            $.get("http://integracionws.azurewebsites.net/webservices/getExchangeRate?currency="+$('#currency').val(), function(data){
+                var tasa = data.rate;
+                $('#currency-value').val(tasa);
+                $('#amount-converted').val(amount*tasa)
+            });
+        });
+    });
     $("input[type='hidden'][name^='_'] ").remove();
 </script>
 </body>
